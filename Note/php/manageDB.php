@@ -45,7 +45,6 @@ class DataBase
   public function ExecuteSQL($query)
   {
     //sqlの実行
-    echo $query;
     $result = $this->dblink->query($query);
     if(!$result)
     {
@@ -53,7 +52,10 @@ class DataBase
     }
 
     //取得したデータの格納
-    $this->result = fetch_array($result);
+    $this->result = $result->fetch_all($resulttype=MYSQLI_ASSOC);
+    $result->close();
+
+    return $this->result;
   }
 
   /*
@@ -86,6 +88,10 @@ class UserTable extends DataBase
   public $departmentId = "";//学科
   public $grade = -1;       //学年
 
+  private $username = "";   //ユーザ名
+  private $password = "";   //パスワード
+  private $cache = "";      //キャッシュ
+
   //コンストラクタ
   public function __construct()
   {
@@ -101,8 +107,9 @@ class UserTable extends DataBase
   }
 
   //メソッド
-  public function Show2()
+  public function Show()
   {
+    parent::Show();
     echo $this->id.'<br>';
     echo $this->nicname.'<br>';
     echo $this->firstname.'<br>';
@@ -110,8 +117,20 @@ class UserTable extends DataBase
     echo $this->age.'<br>';
     echo $this->departmentId.'<br>';
     echo $this->grade.'<br>';
-    $this->Show();
   }
+
+  //ログイン
+  public function Login($username, $password)
+  {
+    $this->username = $username;
+    $this->password = $password;
+
+
+
+  }
+
+  //ログアウト
+  
 }
 
 ?>

@@ -14,7 +14,8 @@ echo "PATH_CSS : ".PATH_CSS."<br>";
 echo "PROJECT_NAME : ".PROJECT_NAME."<br>";
 
 $user = new UserTable();
-$user->ExecuteSQL("insert into user (id, nicname) values(0, \"いいキャラ\")");
+$user->ExecuteSQL("select * from user_info");
+print_r($user->result);
 ?>
 
 <!DOCTYPE html>
@@ -24,15 +25,15 @@ $user->ExecuteSQL("insert into user (id, nicname) values(0, \"いいキャラ\")
     <title>市川研ウェブサイト</title>
   </head>
   <body>
-    ・タイトル
+    ・タイトル<br>
 
-    ・キーワード
+    ・キーワード<br>
 
-    ・記事
+    ・記事<br>
 
-    ・参考文献
+    ・参考文献<br>
 
-    ・関連記事（キーワードから）
+    ・関連記事（キーワードから）<br>
 
   </body>
 </html>
