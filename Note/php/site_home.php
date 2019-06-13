@@ -13,8 +13,13 @@ echo "PATH_JS : ".PATH_JS."<br>";
 echo "PATH_CSS : ".PATH_CSS."<br>";
 echo "PROJECT_NAME : ".PROJECT_NAME."<br>";
 
-$user = new UserTable();
+$user = new UserInfo();
 $user->ExecuteSQL("select * from user_info");
+print_r($user->result);
+$newpost = new UserPost();
+//$newpost->ExecuteSQL("insert into post(id, title, userid) values(0, \"test\", 0)");
+$newpost->ExecuteSQL("update post set title = \"北海道\" where id = 0");
+$newpost->ExecuteSQL("select * from post");
 print_r($user->result);
 ?>
 

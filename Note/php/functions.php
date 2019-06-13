@@ -173,7 +173,8 @@ function connectingMySQL()
  */
 function closingMySQL($link)
 {
-	if( $link->close() ) {
+	if($link->close())
+  {
 		error('切断に失敗しました。'.mysqli_error($link));
 	}
 }
