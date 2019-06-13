@@ -14,6 +14,7 @@ class DataBase
   //パブリックプロパティ
   public $previousQuery = "";
   public $result = null;
+  public $error = null;
 
   //コンストラクタ
   public function __construct()
@@ -45,13 +46,21 @@ class DataBase
    * SQLを実行する
    * 実行結果は$this->resultに格納される．
    */
-  public function ExecuteSQL($query)
+  public function ExecuteSQL($query, $binds = null)
   {
     //sqlの実行
+    if($stmt = $this->dblink->prepare($query))
+    {
+      for($i = 0; $i < count($binds); $i++)
+      {
+        $stmt->bind_param("is", );
+      }
+    }
     $result = $this->dblink->query($query);
     if(!$result)
     {
-      error('SELECTクエリに失敗しました:'.$query.mysql_error());
+      error('SELECTクエリに失敗しました:'.$this->dblink->error);
+      $this->error = 'SELECTクエリに失敗しました:'.$this->dblink->error;
     }
 
     //取得したデータの格納
@@ -77,7 +86,11 @@ class DataBase
    */
   private function disconnect()
   {
-    closingMySQL($this->dblink);
+    $isSuccess = closingMySQL($this->dblink);
+    if(!$isSuccess)
+    {
+      $this->error = "切断に失敗しました.";
+    }
     $this->dblink = null;
   }
 }
@@ -91,7 +104,7 @@ class UserInfo extends DataBase
   public $firstname = '';   //名
   public $lastname = '';    //姓
   public $age = -1;         //年齢
-  public $departmentId = "";//学科
+  public $departmentId = -1;//学科
   public $grade = -1;       //学年
 
   private $username = "";   //ユーザ名
@@ -145,6 +158,38 @@ class UserInfo extends DataBase
   public function Logout()
   {
 
+  }
+
+  //ユーザー登録
+  public function Signup(
+    $username,    //ユーザ名
+    $password,    //パスワード
+    $nicname,     //ユーザ名（ニックネーム）
+    $firstname = '',   //名
+    $lastname = '',    //姓
+    $age = -1,         //年齢
+    $departmentId = -1,//学科
+    $grade = -1        //学年
+    )
+  {
+    //$this->ExecuteSQL('insert into user_info(username, password, nicname, firstname, lastname, age, departmentid, grade) values(\''.$username.'\', \''.$password.'\', \''.$nicname.'\', \''.$firstname.'\', \''.$lastname.'\', '.$age.', '.$departmentId.', '.$grade.')');
+    $query = 'insert into user_info(username, password, nicname, firstname, lastname, age, departmentid, grade) values(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    $this->ExecuteSQL($query, array($username, $password, $nicname, $firstname, $lastname, $age, $departmentId, $grade));
+
+    if($this->result)
+    {
+      $this->username = $username;
+      $this->password = $password;
+      $this->nicname = $nicname;
+      $this->firstname = $firstname;
+      $this->lastname = $lastname;
+      $this->age = $age;
+      $this->departmentId = $departmentId;
+      $this->grade = $grade;
+    }
+    else {
+      error("sign up error...");
+    }
   }
 }
 

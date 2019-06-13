@@ -38,6 +38,14 @@ function CreateJSList($js)
   return $result;
 }
 
+/*
+ * パスワードをsha256でハッシュ化する
+ */
+function HashingPassword($password)
+{
+  return hash("sha256", $password);
+}
+
 //google newsから記事を取ってくるときのメソッド群
 
 function data_get($url,$authuser="",$authpass=""){
@@ -163,6 +171,7 @@ function connectingMySQL()
   $link = new mysqli('localhost', 'root', '', 'note');
 	if($link->connect_error){
 		error("Connect failed: ".$link->connect_errno.' : '.$link->connect_error);
+    return null;
 	}
   $link->set_charset('utf8');
 	return $link;
@@ -175,8 +184,10 @@ function closingMySQL($link)
 {
 	if($link->close())
   {
-		error('切断に失敗しました。'.mysqli_error($link));
+		error('切断に失敗しました。');
+    return false;
 	}
+  return true;
 }
 
 /*
